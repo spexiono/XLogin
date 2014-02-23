@@ -1,0 +1,246 @@
+local version = "XLogin V 1.8"
+--Login program by Spexiono
+--GNU GENERAL PUBLIC LICENSE
+os.pullEvent = os.pullEventRaw  --Prevent Terminate
+term.clear()
+term.setCursorPos(1,1) --Prepare terminal
+--User details----------------
+local user = "name"         --Remember, your login is CasE sEnsaTivE
+local password = "1234"     --
+--Configuration --------------
+local enable_modem = true   --Enable modem auto-setup
+local enable_id = true      --Show ID
+local enable_label = true   --Show Label
+local enable_welcome = true --Show welcome after login
+------------------------------
+local w, h = term.getSize()
+
+--Functions
+local function tcolor(cval) --Changes text color IF advanced computer
+	if term.isColor() then
+		term.setTextColor(colors[cval])
+	end
+end
+
+local function indentprint(text) --Prints text and sets cursor to next line at same X pos
+        local curx,cury = term.getCursorPos()
+        term.write(text)
+        term.setCursorPos(curx,cury+1)
+end
+
+--Thanks to BigSHinyToys for this modem scanner function
+local function openRednet()
+	for _,side in ipairs({"top", "bottom", "front", "left", "right", "back"}) do
+		if peripheral.isPresent(side) and peripheral.getType(side) == "modem" then
+			rednet.open(side)
+			return true
+		end
+	end
+end
+
+------------
+if w < 51 or h < 19 then --The GUI only supports the default computer terminal
+	tcolor("red")
+	print(version," is running in Safe mode!")
+	tcolor("white")
+	while true do
+		write("Username:") u = read()
+		write("Password:") p = read("*")
+		if u == user and p == password then
+			print("Welcome "..user)
+			error()
+		else
+			tcolor("red")
+			print("Wrong Login")
+			tcolor("white")
+		end
+	end
+end
+
+--Print the login screen
+tcolor("blue")
+print[[
+
+    +------------------------------------------+
+    |                                          |
+    |                                          |
+    |                                          |
+    |                                          |
+    |           +------------------+           |
+    |           |                  |           |
+    |           +------------------+           |
+    |                                          |
+    |           +------------------+           |
+    |           |                  |           |
+    |           +------------------+           |
+    |                                          |
+    |                                          |
+    |                                          |
+    |                                          |
+    +------------------------------------------+]]
+
+--Center version + title
+term.setCursorPos(w/2-version:len()/2,5)
+tcolor("yellow")
+print(version)
+tcolor("white")
+
+if enable_id == true then
+	term.setCursorPos(24,16)
+	write("ID:") tcolor("lime") write(os.getComputerID())
+end
+
+if enable_label == true then
+	term.setCursorPos(8,3)
+	if os.getComputerLabel() ~= nil then
+		tcolor("white")
+		write("Label:") tcolor("lime") write(os.getComputerLabel())
+	else
+		tcolor("gray")
+		write("Label")
+	end
+end
+
+tcolor("white")
+
+if enable_modem == true then
+	term.setCursorPos(8,16)
+	if openRednet() then
+		write("Modem:")
+		tcolor("lime")
+		print("enabled")
+	else
+		tcolor("gray")
+		print("Modem")
+	end
+end
+
+tcolor("white")
+--Start main loop
+while true do
+	term.setCursorPos(9,8)
+	print("Username")
+	term.setCursorPos(9,12)
+	print("Password")
+	--Read username and password inputs
+	term.setCursorPos(18,8)
+	u = read()
+	term.setCursorPos(18,12)
+	p = read("*")
+	if p == password and u == user then
+		--successful
+		term.clear()
+		term.setCursorPos(1,1)
+	if enable_welcome == false then --Hide Welcome screen
+		error() --End program now
+	else
+		--Expanding GUI
+		tcolor("blue")
+		print[[
+    +------------------------------------------+
+    |                                          |
+    |                                          |
+    |                                          |]]
+		term.setCursorPos(7,2)
+		tcolor("yellow")
+		print(version)
+		tcolor("white")
+		term.setCursorPos(11+version:len(),2)
+		print("Welcome ", u ,"!")
+		--Reprint enabled modules (Modem-id-label)
+		if enable_modem == true then
+			term.setCursorPos(8,3)
+			if modemSide then
+				write("Modem:")
+				tcolor("lime")
+				print("enabled")
+			else
+				tcolor("gray")
+				write("Modem")
+			end
+		end
+		if enable_id == true then
+			term.setCursorPos(24,3)
+			tcolor("white")
+			write("ID:") tcolor("lime") print(os.getComputerID())
+		end
+		if enable_label == true then
+			term.setCursorPos(8,4)
+			if os.getComputerLabel() ~= nil then
+				tcolor("white")
+				write("Label:") tcolor("lime") print(os.getComputerLabel())
+			else
+				tcolor("gray")
+				print("Label")
+			end
+		end
+
+		--Check if login details are defaults then extend the box and notify if true
+		tcolor("blue")
+		if u == "name" and p == "1234" then
+			term.setCursorPos(1,5)
+			print("    |                                          |")
+			print("    |                                          |")
+			print("    +------------------------------------------+")
+			tcolor("red")
+			term.setCursorPos(11,5)
+			print("Warning! Default username!")
+			term.setCursorPos(11,6)
+			print("Warning! Default password!")
+			term.setCursorPos(1,8)
+		elseif p == "1234" then
+			term.setCursorPos(1,5)
+			print("    |                                          |")
+			tcolor("red")
+			term.setCursorPos(11,5)
+			print("Warning! Default password!")
+			tcolor("blue")
+			print("    +------------------------------------------+")
+		elseif u == "name" then
+			term.setCursorPos(1,5)
+			tcolor("blue")
+			print("    |                                          |")
+			tcolor("red")
+			term.setCursorPos(11,5)
+			print("Warning! Default username!")
+			tcolor("blue")
+			print("    +------------------------------------------+")
+		else
+			tcolor("blue")
+			term.setCursorPos(1,5)
+			print("    +------------------------------------------+")
+		end
+		tcolor("white")
+		error() --End program--
+	end
+
+	else	--Authentication was unsuccessful
+		--Highlights which input was empty
+		tcolor("red")
+		term.setCursorPos(12,14)
+		print("Incorrect username or password")
+		tcolor("blue")
+		term.setCursorPos(17,7)
+		indentprint("+------------------+")--Redraw username box
+		indentprint("|                  |")
+		indentprint("+------------------+")
+		term.setCursorPos(17,11)
+		indentprint("+------------------+")--Redraw password box
+		indentprint("|                  |")
+		indentprint("+------------------+")
+		tcolor("red")
+		if u == "" then
+			term.setCursorPos(17,7)
+			indentprint("#------------------#")
+			indentprint("|                  |")
+			indentprint("#------------------#")
+		end
+		if p == "" then
+			term.setCursorPos(17,11)
+			indentprint("#------------------#")
+			indentprint("|                  |")
+			indentprint("#------------------#")
+		end
+		tcolor("white")
+	end
+end
