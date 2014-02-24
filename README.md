@@ -3,6 +3,7 @@ XLogin
 
 XLogin is a light yet feature rich ComputerCraft login program  
 http://pastebin.com/fnrUKmgX  
+http://www.computercraft.info/forums2/index.php?/topic/17231-xlogin-the-fast-login-program/  
 To use the program in computercraft type: 
 `pastebin get fnrUKmgX startup`  
 **I highly recommend you change these:**  
