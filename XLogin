@@ -150,7 +150,7 @@ while true do
 		--Reprint enabled modules (Modem-id-label)
 		if enable_modem == true then
 			term.setCursorPos(8,3)
-			if modemSide then
+			if openRednet() then
 				write("Modem:")
 				tcolor("lime")
 				print("enabled")
